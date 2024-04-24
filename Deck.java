@@ -17,7 +17,7 @@ public class Deck {
 		
 		for (String suit : suits) {
 			for (int i=0; i<faces.length; i++) {
-				cards.add(new Card(suit, values[i], faces[i]));
+				cards.add(new Card(suit, i +2 , faces[i]));
 			}
 		}
 	}

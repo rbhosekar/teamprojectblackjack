@@ -1,4 +1,4 @@
-Public class Card {
+public class Card {
 	private String suit;
 	private int value;
 	private String face;
@@ -13,7 +13,7 @@ Public class Card {
 		return suit;
 	}
 	
-	public int getValur() {
+	public int getValue() {
 		return value;
 	}
 	
