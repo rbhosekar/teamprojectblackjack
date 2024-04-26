@@ -1,42 +1,43 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class BlackJackGUI extends JFrame {
-    private JComboBox<Integer> playersComboBox;
+public class BlackJackGUI extends JPanel {
+    private JPanel parentPanel;
+    private CardLayout cardLayout;
 
-    public BlackJackGUI() {
-        setTitle("Blackjack - Number of Players");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 600);
-        setLocationRelativeTo(null);
+    public BlackJackGUI(JPanel parentPanel, CardLayout cardLayout) {
+        this.parentPanel = parentPanel;
+        this.cardLayout = cardLayout;
 
-        // create the title label
-        JLabel titleLabel = new JLabel("BlackJack");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        // Initialize the title screen
+        BlackJackTitle titleScreen = new BlackJackTitle(this, parentPanel, cardLayout);
+        parentPanel.add(titleScreen, "titleScreen");
 
-        playersComboBox = new JComboBox<>();
-        playersComboBox.addItem(2);
-        playersComboBox.addItem(3);
-        playersComboBox.addItem(4);
-        playersComboBox.addItem(5);
-        playersComboBox.addItem(6);
-        playersComboBox.addItem(7);
-        playersComboBox.setSelectedItem(2); // default 2 players
+        // Switch to the title screen
+        cardLayout.show(parentPanel, "titleScreen");
+    }
 
-        // create panel to hold components
-        JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-        panel.add(titleLabel);
-        panel.add(playersComboBox);
-
-        add(panel);
-        setVisible(true);
+    public void switchToGame(int numberOfPlayers) {
+        // Switch to the game panel
+        BlackJackGame gamePanel = new BlackJackGame(parentPanel, cardLayout, numberOfPlayers);
+        parentPanel.add(gamePanel, "gamePanel");
+        cardLayout.show(parentPanel, "gamePanel");
     }
 
     public static void main(String[] args) {
-        BlackJackGUI gui = new BlackJackGUI();
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Blackjack Game");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(800, 600);
+
+            JPanel mainPanel = new JPanel(new CardLayout());
+            CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+            BlackJackGUI gameGUI = new BlackJackGUI(mainPanel, cardLayout);
+
+            frame.add(mainPanel);
+            frame.setVisible(true);
+        });
     }
 }
+
+
