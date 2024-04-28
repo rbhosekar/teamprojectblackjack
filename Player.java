@@ -18,6 +18,10 @@ public class Player {
             System.out.println("Insufficient balance. Please place a valid bet.");
         }
     }
+
+    public int getScore() {
+        return hand.calculateScore();
+    }
     
     public int getBet() {
         return bet;

@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 public class BlackJackTitle extends JPanel {
 
-    public BlackJackTitle(BlackJackGUI blackJackGUI, JPanel parentPanel, CardLayout cardLayout) {
+    public BlackJackTitle(BlackJackGUI blackJackGUI) {
 
         JLabel titleLabel = new JLabel("BlackJack");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
@@ -36,7 +36,7 @@ public class BlackJackTitle extends JPanel {
         centerPanel.add(playersComboBox);
         add(centerPanel, BorderLayout.CENTER);
         add(startButton, BorderLayout.SOUTH);
-        centerPanel.setBackground(new Color(0, 50, 0)); // set the background to dark green
+        centerPanel.setBackground(new Color(10, 50, 30)); // set the background to dark green
     }
 }
 

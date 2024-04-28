@@ -16,9 +16,9 @@ public class Dealer {
     public void clearHand() {
         hand.getCards().clear();
     }
-    
-    public boolean wantsToHit() {
-        return hand.calculateScore() <= 16;
+
+    public int getScore() {
+        return hand.calculateScore();
     }
     
     public void displayPartialHand() {

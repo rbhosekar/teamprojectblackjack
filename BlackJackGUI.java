@@ -10,7 +10,7 @@ public class BlackJackGUI extends JPanel {
         this.cardLayout = cardLayout;
 
         // Initialize the title screen
-        BlackJackTitle titleScreen = new BlackJackTitle(this, parentPanel, cardLayout);
+        BlackJackTitle titleScreen = new BlackJackTitle(this);
         parentPanel.add(titleScreen, "titleScreen");
 
         // Switch to the title screen
@@ -19,7 +19,8 @@ public class BlackJackGUI extends JPanel {
 
     public void switchToGame(int numberOfPlayers) {
         // Switch to the game panel
-        BlackJackGame gamePanel = new BlackJackGame(parentPanel, cardLayout, numberOfPlayers);
+        BlackJackGame gamePanel = new BlackJackGame(numberOfPlayers);
+        gamePanel.setBackground(new Color(10, 50, 30));
         parentPanel.add(gamePanel, "gamePanel");
         cardLayout.show(parentPanel, "gamePanel");
     }
