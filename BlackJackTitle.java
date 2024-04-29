@@ -13,7 +13,7 @@ public class BlackJackTitle extends JPanel {
         titleLabel.setForeground(Color.YELLOW);
 
         JComboBox<Integer> playersComboBox = new JComboBox<>();
-        for (int i = 2; i <= 7; i++) {
+        for (int i = 1; i <= 6; i++) {
             playersComboBox.addItem(i);
         }
 

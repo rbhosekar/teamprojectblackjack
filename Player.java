@@ -38,6 +38,7 @@ public class Player {
     public int getBalance() {
         return balance;
     }
+
     
     public void collectWinnings(int winnings) {
         balance += winnings;
