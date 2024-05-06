@@ -16,6 +16,7 @@ public class BlackJackGame extends JPanel {
     private Deck deck;
     private int betAmount;
     private int currentPlayerIndex = 0;
+    private int dealerTotalValue;
     private boolean dealerFirstCardHidden = true;
 
     public BlackJackGame(int numberOfPlayers) {
@@ -150,11 +151,18 @@ public class BlackJackGame extends JPanel {
             List<Card> cards = players[i].getHand().getCards();
             panels.clear(); // Clear the old card panels list
 
+            int totalValue = 0; // track total value
+            int dealerTotalValue = 0;
             for (Card card : cards) {
+            	totalValue += card.getValue(); // calculate total value
                 CardPanel newPanel = new CardPanel(card);
                 panels.add(newPanel);
                 playerPanel.add(newPanel);
             }
+            
+            //display total value
+            JLabel totalLabel = new JLabel("Total: " + totalValue);
+            playerPanel.add(totalLabel);
         }
 
         // Similar updates needed for the dealer
@@ -166,10 +174,15 @@ public class BlackJackGame extends JPanel {
         dealerCardPanels.clear(); // Clear old dealer card panels
         List<Card> dealerCards = dealer.getHand().getCards();
         for (Card card : dealerCards) {
+        	dealerTotalValue += card.getValue(); //calculate total dealer value
             CardPanel newPanel = new CardPanel(card);
             dealerCardPanels.add(newPanel);
             dealerPanel.add(newPanel);
         }
+        
+        //display total value of dealer's cards
+        JLabel dealerTotalLabel = new JLabel("Total: " + dealerTotalValue);
+        dealerPanel.add(dealerTotalLabel);
 
         revalidate();
         repaint();
@@ -195,6 +208,7 @@ public class BlackJackGame extends JPanel {
 
 
     private void dealerTurn() {
+    	dealerTotalValue = 0;
         revealDealer();  // Initially reveal the dealer's starting hand
         Timer timer = new Timer(500, new ActionListener() {
             @Override
