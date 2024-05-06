@@ -5,13 +5,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class BlackJackGame extends JPanel {
     private Player[] players;
@@ -128,6 +121,7 @@ public class BlackJackGame extends JPanel {
         } else {
             updateHandDisplay();
         }
+        JOptionPane.showMessageDialog(this, "Player " + (currentPlayerIndex + 1) + "'s Turn", "Next Player", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void checkForBust() {
@@ -148,6 +142,9 @@ public class BlackJackGame extends JPanel {
             JPanel playerPanel = (JPanel) playerCardPanels.get(i).get(0).getParent();
             playerPanel.removeAll(); // Clear the panel for new cards
             playerPanel.add(new JLabel("Player " + (i + 1) + ": ")); // Re-add the player label
+
+            JLabel balanceLabel = new JLabel("Balance: $" + players[i].getBalance());
+            playerPanel.add(balanceLabel);
 
             List<CardPanel> panels = playerCardPanels.get(i);
             List<Card> cards = players[i].getHand().getCards();
