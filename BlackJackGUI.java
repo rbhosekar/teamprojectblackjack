@@ -19,7 +19,6 @@ public class BlackJackGUI extends JPanel {
 
     public void switchToGame(int numberOfPlayers) {
         BlackJackGame gamePanel = new BlackJackGame(numberOfPlayers);
-        gamePanel.setBackground(new Color(10, 50, 30));
         parentPanel.add(gamePanel, "gamePanel");
         cardLayout.show(parentPanel, "gamePanel");
     }

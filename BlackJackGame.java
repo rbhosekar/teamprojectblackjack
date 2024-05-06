@@ -30,13 +30,17 @@ public class BlackJackGame extends JPanel {
 
     private void initUI() {
         setLayout(new BorderLayout());
+        setBackground(new Color(10, 50, 30));
 
         // Dealer panel setup
         JPanel dealerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        dealerPanel.setBackground(new Color(10, 50, 30));
         dealerLabel = new JLabel("Dealer: ");
+        dealerLabel.setForeground(Color.YELLOW);
         dealerPanel.add(dealerLabel);
         for (int i = 0; i < 2; i++) {
             CardPanel panel = new CardPanel(new Card("Spades", 10, "King"));
+            panel.setBackground(new Color(10, 50, 30));
             dealerCardPanels.add(panel);
             dealerPanel.add(panel);
         }
@@ -45,14 +49,19 @@ public class BlackJackGame extends JPanel {
         // Player panel setup
         JPanel playerPanel = new JPanel();
         playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
+        playerPanel.setBackground(new Color(10, 50, 30));
         JScrollPane scrollPane = new JScrollPane(playerPanel);
+        scrollPane.setBackground(new Color(10, 50, 30));
         for (int i = 0; i < players.length; i++) {
             JPanel pPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pPanel.setBackground(new Color(10, 50, 30));
             playerLabel = new JLabel("Player " + (i + 1) + ": ");
+            playerLabel.setForeground(Color.YELLOW);
             pPanel.add(playerLabel);
             List<CardPanel> cardPanels = new ArrayList<>();
             for (int j = 0; j < 2; j++) {
                 CardPanel cPanel = new CardPanel(new Card("Hearts", 10, "Ace"));
+                cPanel.setBackground(new Color(10, 50, 30));
                 cardPanels.add(cPanel);
                 pPanel.add(cPanel);
             }
@@ -69,9 +78,11 @@ public class BlackJackGame extends JPanel {
         hitButton.addActionListener(this::handleHit);
         standButton.addActionListener(this::handleStand);
         doubleDownButton.addActionListener(this::handleDoubleDown);
+
         buttonPanel.add(hitButton);
         buttonPanel.add(standButton);
         buttonPanel.add(doubleDownButton);
+        buttonPanel.setBackground(new Color(10, 50, 30));
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -132,19 +143,20 @@ public class BlackJackGame extends JPanel {
         }
     }
 
-    
-    
-    
-    
-    
+
+
+
+
+
     private void updateHandDisplay() {
         // Clear existing cards from UI and update with current cards
         for (int i = 0; i < playerCardPanels.size(); i++) {
             JPanel playerPanel = (JPanel) playerCardPanels.get(i).get(0).getParent();
             playerPanel.removeAll(); // Clear the panel for new cards
-            playerPanel.add(new JLabel("Player " + (i + 1) + ": ")); // Re-add the player label
+            playerPanel.add(new JLabel("Player " + (i + 1) + ": ", SwingConstants.LEFT)).setForeground(Color.YELLOW); // Re-add the player label
 
             JLabel balanceLabel = new JLabel("Balance: $" + players[i].getBalance());
+            balanceLabel.setForeground(Color.YELLOW); // Set foreground color to yellow
             playerPanel.add(balanceLabel);
 
             List<CardPanel> panels = playerCardPanels.get(i);
@@ -152,41 +164,43 @@ public class BlackJackGame extends JPanel {
             panels.clear(); // Clear the old card panels list
 
             int totalValue = 0; // track total value
-            int dealerTotalValue = 0;
             for (Card card : cards) {
-            	totalValue += card.getValue(); // calculate total value
+                totalValue += card.getValue(); // calculate total value
                 CardPanel newPanel = new CardPanel(card);
                 panels.add(newPanel);
                 playerPanel.add(newPanel);
             }
-            
-            //display total value
+
+            // Display total value
             JLabel totalLabel = new JLabel("Total: " + totalValue);
+            totalLabel.setForeground(Color.YELLOW); // Set foreground color to yellow
             playerPanel.add(totalLabel);
         }
 
         // Similar updates needed for the dealer
         JPanel dealerPanel = (JPanel) dealerCardPanels.get(0).getParent();
         dealerPanel.removeAll(); // Clear the panel for new cards
-        dealerLabel = new JLabel("Dealer: ");
         dealerPanel.add(dealerLabel); // Re-add the dealer label
 
         dealerCardPanels.clear(); // Clear old dealer card panels
         List<Card> dealerCards = dealer.getHand().getCards();
+        int dealerTotalValue = 0; // track dealer's total value
         for (Card card : dealerCards) {
-        	dealerTotalValue += card.getValue(); //calculate total dealer value
+            dealerTotalValue += card.getValue(); // calculate total dealer value
             CardPanel newPanel = new CardPanel(card);
             dealerCardPanels.add(newPanel);
             dealerPanel.add(newPanel);
         }
-        
-        //display total value of dealer's cards
+
+        // Display total value of dealer's cards
         JLabel dealerTotalLabel = new JLabel("Total: " + dealerTotalValue);
+        dealerTotalLabel.setForeground(Color.YELLOW); // Set foreground color to yellow
         dealerPanel.add(dealerTotalLabel);
 
         revalidate();
         repaint();
     }
+
 
     private void revealDealer() {
         JPanel dealerPanel = (JPanel) dealerCardPanels.get(0).getParent();
