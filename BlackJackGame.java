@@ -1,21 +1,25 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class BlackJackGame extends JPanel {
     private Player[] players;
     private Dealer dealer;
-    private JTextArea playerHandArea;
-    private JTextArea dealerHandArea;
-    private JTextArea playerValueArea;
-    private JTextArea dealerValueArea;
-
-    private JTextArea playerBalanceArea;
-    private JButton hitButton;
-    private JButton standButton;
-    private JButton doubleDownButton;
+    private List<List<CardPanel>> playerCardPanels;
+    private List<CardPanel> dealerCardPanels;
+    private JButton hitButton, standButton, doubleDownButton;
+    private JLabel dealerLabel, playerLabel;
     private Deck deck;
     private int betAmount;
     private int currentPlayerIndex = 0;
@@ -23,86 +27,81 @@ public class BlackJackGame extends JPanel {
 
     public BlackJackGame(int numberOfPlayers) {
         players = new Player[numberOfPlayers];
+        playerCardPanels = new ArrayList<>();
+        dealerCardPanels = new ArrayList<>();
 
-        hitButton = new JButton("Hit");
-        hitButton.addActionListener(e -> {
-            if (players[currentPlayerIndex].getScore() < 21) {
-                players[currentPlayerIndex].hit(deck.dealCard());
-                doubleDownButton.setEnabled(false);
-                updateHandDisplay();
-            }
+        initUI();
+        dealInitialCards();
+    }
 
-            if (players[currentPlayerIndex].getScore() > 21) {
-                JOptionPane.showMessageDialog(this, "Bust!", "Bust", JOptionPane.INFORMATION_MESSAGE);
-                updateHandDisplay();
-                nextPlayerTurn();
-            }
-        });
-
-        standButton = new JButton("Stand");
-        standButton.addActionListener(e -> {
-            nextPlayerTurn();
-        });
-
-        doubleDownButton = new JButton("Double Down");
-        doubleDownButton.addActionListener(e -> {
-            betAmount *= 2;
-            players[currentPlayerIndex].doubleDown(deck.dealCard());
-            updateHandDisplay();
-            nextPlayerTurn();
-        });
-
-        playerHandArea = new JTextArea(10, 15);
-        dealerHandArea = new JTextArea(10, 15);
-        playerHandArea.setForeground(Color.YELLOW);
-        dealerHandArea.setForeground(Color.YELLOW);
-        Font font1 = new Font("Arial", Font.PLAIN, 20);
-        playerHandArea.setFont(font1);
-        dealerHandArea.setFont(font1);
-        playerHandArea.setEditable(false);
-        dealerHandArea.setEditable(false);
-
-        playerValueArea = new JTextArea(10, 5);
-        dealerValueArea = new JTextArea(10, 5);
-        playerValueArea.setForeground(Color.YELLOW);
-        dealerValueArea.setForeground(Color.YELLOW);
-        Font font2 = new Font("Arial", Font.PLAIN, 17);
-        playerValueArea.setFont(font2);
-        dealerValueArea.setFont(font2);
-        playerValueArea.setEditable(false);
-        dealerValueArea.setEditable(false);
-
-        playerBalanceArea = new JTextArea(1, 5);
-        playerBalanceArea.setForeground(Color.YELLOW);
-        playerBalanceArea.setFont(font2);
-        playerBalanceArea.setEditable(false);
-
+    private void initUI() {
         setLayout(new BorderLayout());
-        JPanel playerPanel = new JPanel(new BorderLayout());
-        playerPanel.add(playerHandArea, BorderLayout.CENTER);
-        playerPanel.add(playerValueArea, BorderLayout.EAST);
 
-        JPanel dealerPanel = new JPanel(new BorderLayout());
-        dealerPanel.add(dealerHandArea, BorderLayout.CENTER);
-        dealerPanel.add(dealerValueArea, BorderLayout.EAST);
+        // Dealer panel setup
+        JPanel dealerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        dealerLabel = new JLabel("Dealer: ");
+        dealerPanel.add(dealerLabel);
+        for (int i = 0; i < 2; i++) {
+            CardPanel panel = new CardPanel(new Card("Spades", 10, "King"));
+            dealerCardPanels.add(panel);
+            dealerPanel.add(panel);
+        }
+        add(dealerPanel, BorderLayout.NORTH);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(0, 1));
-        buttonPanel.add(playerBalanceArea);
+        // Player panel setup
+        JPanel playerPanel = new JPanel();
+        playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(playerPanel);
+        for (int i = 0; i < players.length; i++) {
+            JPanel pPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            playerLabel = new JLabel("Player " + (i + 1) + ": ");
+            pPanel.add(playerLabel);
+            List<CardPanel> cardPanels = new ArrayList<>();
+            for (int j = 0; j < 2; j++) {
+                CardPanel cPanel = new CardPanel(new Card("Hearts", 10, "Ace"));
+                cardPanels.add(cPanel);
+                pPanel.add(cPanel);
+            }
+            playerCardPanels.add(cardPanels);
+            playerPanel.add(pPanel);
+        }
+        add(scrollPane, BorderLayout.CENTER);
+
+        // Button panel setup
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
+        hitButton = new JButton("Hit");
+        standButton = new JButton("Stand");
+        doubleDownButton = new JButton("Double Down");
+        hitButton.addActionListener(this::handleHit);
+        standButton.addActionListener(this::handleStand);
+        doubleDownButton.addActionListener(this::handleDoubleDown);
         buttonPanel.add(hitButton);
         buttonPanel.add(standButton);
         buttonPanel.add(doubleDownButton);
-
-        add(playerPanel, BorderLayout.WEST);
-        add(dealerPanel, BorderLayout.EAST);
         add(buttonPanel, BorderLayout.SOUTH);
-        buttonPanel.setBackground(new Color(90, 50, 30));
-        playerHandArea.setBackground(new Color(10, 50, 30));
-        playerValueArea.setBackground(new Color(10, 50, 30));
-        playerBalanceArea.setBackground(new Color(10, 50, 30));
-        dealerHandArea.setBackground(new Color(10, 50, 30));
-        dealerValueArea.setBackground(new Color(10, 50, 30));
+    }
 
-        dealInitialCards();
+    private void handleHit(ActionEvent e) {
+        // Handling hit button action
+        if (players[currentPlayerIndex].getScore() < 21) {
+            players[currentPlayerIndex].hit(deck.dealCard());
+            doubleDownButton.setEnabled(false);
+            updateHandDisplay();
+            checkForBust();
+        }
+    }
+
+    private void handleStand(ActionEvent e) {
+        // Proceed to the next player or dealer turn
+        nextPlayerTurn();
+    }
+
+    private void handleDoubleDown(ActionEvent e) {
+        // Player doubles the bet and takes one final card
+        betAmount *= 2;
+        players[currentPlayerIndex].doubleDown(deck.dealCard());
+        updateHandDisplay();
+        nextPlayerTurn();
     }
 
     private void dealInitialCards() {
@@ -114,55 +113,112 @@ public class BlackJackGame extends JPanel {
         dealer.addCardToHand(deck.dealCard());
 
         for (int i = 0; i < players.length; i++) {
-            players[i] = new Player("player", 1000);
+            players[i] = new Player("Player " + (i + 1), 1000);
             players[i].addCardToHand(deck.dealCard());
             players[i].addCardToHand(deck.dealCard());
         }
-
         updateHandDisplay();
         currentPlayerIndex = 0;
     }
 
     private void nextPlayerTurn() {
-        doubleDownButton.setEnabled(true);
-        if (currentPlayerIndex == players.length - 1) {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        if (currentPlayerIndex == 0) {
             dealerTurn();
         } else {
-            currentPlayerIndex++;
             updateHandDisplay();
         }
     }
 
+    private void checkForBust() {
+        if (players[currentPlayerIndex].getScore() > 21) {
+            JOptionPane.showMessageDialog(this, "Bust!", "Player " + (currentPlayerIndex + 1) + " Busts", JOptionPane.INFORMATION_MESSAGE);
+            nextPlayerTurn();
+        }
+    }
+
+    
+    
+    
+    
+    
     private void updateHandDisplay() {
-        playerHandArea.setText(String.format("Player %d's Hand:\n%s", currentPlayerIndex + 1, players[currentPlayerIndex].getHand()));
-        dealerHandArea.setText("Dealer's Hand:\n" + "[Hidden]\n" + dealer.getHand());
-        dealerValueArea.setText("Value: ?");
-        playerValueArea.setText("Value: " + players[currentPlayerIndex].getScore());
-        playerBalanceArea.setText(String.format("Player %d's Balance:\n%s", currentPlayerIndex + 1, players[currentPlayerIndex].getBalance()));
+        // Clear existing cards from UI and update with current cards
+        for (int i = 0; i < playerCardPanels.size(); i++) {
+            JPanel playerPanel = (JPanel) playerCardPanels.get(i).get(0).getParent();
+            playerPanel.removeAll(); // Clear the panel for new cards
+            playerPanel.add(new JLabel("Player " + (i + 1) + ": ")); // Re-add the player label
+
+            List<CardPanel> panels = playerCardPanels.get(i);
+            List<Card> cards = players[i].getHand().getCards();
+            panels.clear(); // Clear the old card panels list
+
+            for (Card card : cards) {
+                CardPanel newPanel = new CardPanel(card);
+                panels.add(newPanel);
+                playerPanel.add(newPanel);
+            }
+        }
+
+        // Similar updates needed for the dealer
+        JPanel dealerPanel = (JPanel) dealerCardPanels.get(0).getParent();
+        dealerPanel.removeAll(); // Clear the panel for new cards
+        dealerLabel = new JLabel("Dealer: ");
+        dealerPanel.add(dealerLabel); // Re-add the dealer label
+
+        dealerCardPanels.clear(); // Clear old dealer card panels
+        List<Card> dealerCards = dealer.getHand().getCards();
+        for (Card card : dealerCards) {
+            CardPanel newPanel = new CardPanel(card);
+            dealerCardPanels.add(newPanel);
+            dealerPanel.add(newPanel);
+        }
+
+        revalidate();
+        repaint();
     }
 
     private void revealDealer() {
-        dealerHandArea.setText("Dealer's Hand:\n" + dealer.revealHand());
-        dealerValueArea.setText("Value: " + dealer.getScore());
+        JPanel dealerPanel = (JPanel) dealerCardPanels.get(0).getParent();
+        dealerPanel.removeAll();  // Clear the panel for new cards
+        dealerLabel = new JLabel("Dealer: ");
+        dealerPanel.add(dealerLabel);  // Re-add the dealer label
+
+        dealerCardPanels.clear();  // Clear old dealer card panels
+        List<Card> dealerCards = dealer.getHand().getCards();
+        for (Card card : dealerCards) {
+            CardPanel newPanel = new CardPanel(card);
+            dealerCardPanels.add(newPanel);
+            dealerPanel.add(newPanel);
+        }
+
+        dealerPanel.revalidate();
+        dealerPanel.repaint();
     }
 
+
     private void dealerTurn() {
-        revealDealer();
+        revealDealer();  // Initially reveal the dealer's starting hand
         Timer timer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (dealer.getScore() < 17) {
+                // Continue hitting if the dealer's score is less than 17 or it's a soft 17
+                if (dealer.getScore() < 17 || (dealer.getScore() == 17 && dealer.hasSoftSeventeen())) {
                     dealer.addCardToHand(deck.dealCard());
-                    revealDealer();
+                    revealDealer();  // Update display after each hit
                 } else {
                     ((Timer) e.getSource()).stop();
-                    dealerFirstCardHidden = false; // Reveal dealer's first card
+                    dealerFirstCardHidden = false; // No longer relevant
+                    revealDealer();  // Ensure final state of dealer's hand is shown
                     determineWinner();
                 }
             }
         });
         timer.start();
     }
+
+
+
 
     private void determineWinner() {
         for (int i = 0; i < players.length; i++) {

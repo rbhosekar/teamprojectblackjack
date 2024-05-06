@@ -22,6 +22,10 @@ public class Dealer {
         }
         return handWithoutFirst;
     }
+    
+    public boolean hasSoftSeventeen() {
+        return hand.calculateScore() == 17 && hand.containsAce() && hand.isSoft();
+    }
 
     public Hand revealHand() {
         return hand;
