@@ -36,7 +36,7 @@ public class BlackJackTitle extends JPanel {
         centerPanel.add(playersComboBox);
         add(centerPanel, BorderLayout.CENTER);
         add(startButton, BorderLayout.SOUTH);
-        centerPanel.setBackground(new Color(10, 50, 30)); // set the background to dark green
+        centerPanel.setBackground(new Color(10, 50, 30)); 
     }
 }
 

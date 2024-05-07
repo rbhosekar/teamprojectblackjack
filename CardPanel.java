@@ -14,18 +14,18 @@ public class CardPanel extends JPanel {
         URL imageUrl = getClass().getResource(card.getImageUrl());
         if (imageUrl == null) {
             System.err.println("Failed to load image. Check if the path is correct: " + card.getImageUrl());
-            return; // Prevent further processing if image isn't found
+            return; 
         }
         ImageIcon icon = new ImageIcon(imageUrl);
 
-        // Calculate the new dimensions as one-third of the original dimensions
+
         int newWidth = icon.getIconWidth() / 3;
         int newHeight = icon.getIconHeight() / 3;
 
-        // Scale the image to one-third of its original size
-        Image image = icon.getImage(); // Transform it
-        Image newimg = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH); // Scale it smoothly
-        icon = new ImageIcon(newimg);  // Transform it back
+
+        Image image = icon.getImage(); 
+        Image newimg = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        icon = new ImageIcon(newimg);  
 
         if (cardLabel == null) {
             cardLabel = new JLabel(icon);

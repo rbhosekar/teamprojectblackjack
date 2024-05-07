@@ -17,7 +17,7 @@ public class Deck {
 	    
 	    for (String suit : suits) {
 	        for (int i = 0; i < faces.length; i++) {
-	            int value = (i >= 10) ? 10 : i + 1; // Jack, Queen, King are valued at 10
+	            int value = (i >= 10) ? 10 : i + 1; // jack, queen and king are all valiued at 3
 	            cards.add(new Card(suit, value, faces[i]));
 	        }
 	    }

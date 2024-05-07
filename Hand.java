@@ -20,14 +20,14 @@ public class Hand {
 
         for (Card card : cards) {
             int value = card.getValue();
-            if (value == 11) {  // Assuming ace is initially 11
+            if (value == 11) {  
                 aceCount++;
             }
             totalScore += value;
         }
 
         while (totalScore > 21 && aceCount > 0) {
-            totalScore -= 10;  // Convert an Ace from 11 to 1
+            totalScore -= 10; 
             aceCount--;
         }
         return totalScore;

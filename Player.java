@@ -52,12 +52,11 @@ public class Player {
         hand.getCards().clear();
     }
     
-    // Methods to handle player actions
     
     public void hit(Card card) {
         addCardToHand(card);
         System.out.println(name + " hits.");
-        displayHand(); // Implement this method or remove the call if not needed
+        displayHand(); 
     }
     public void displayHand() {
         System.out.println(name + "'s hand:");
@@ -69,8 +68,7 @@ public class Player {
     }
     
     public void doubleDown(Card card) {
-        hit(card); // Add one more card to the hand
-        // Double the bet
+        hit(card); 
         bet *= 2;
         System.out.println(name + " doubles down.");
     }

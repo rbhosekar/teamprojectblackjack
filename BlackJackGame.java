@@ -46,7 +46,7 @@ public class BlackJackGame extends JPanel {
         }
         add(dealerPanel, BorderLayout.NORTH);
 
-        // Player panel setup
+        // setup for player panle
         JPanel playerPanel = new JPanel();
         playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
         playerPanel.setBackground(new Color(10, 50, 30));
@@ -70,7 +70,7 @@ public class BlackJackGame extends JPanel {
         }
         add(scrollPane, BorderLayout.CENTER);
 
-        // Button panel setup
+        //button panel
         JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
         hitButton = new JButton("Hit");
         standButton = new JButton("Stand");
@@ -87,7 +87,7 @@ public class BlackJackGame extends JPanel {
     }
 
     private void handleHit(ActionEvent e) {
-        // Handling hit button action
+        // hit button action
         if (players[currentPlayerIndex].getScore() < 21) {
             players[currentPlayerIndex].hit(deck.dealCard());
             doubleDownButton.setEnabled(false);
@@ -97,12 +97,10 @@ public class BlackJackGame extends JPanel {
     }
 
     private void handleStand(ActionEvent e) {
-        // Proceed to the next player or dealer turn
         nextPlayerTurn();
     }
 
     private void handleDoubleDown(ActionEvent e) {
-        // Player doubles the bet and takes one final card
         betAmount *= 2;
         players[currentPlayerIndex].doubleDown(deck.dealCard());
         updateHandDisplay();
@@ -149,21 +147,21 @@ public class BlackJackGame extends JPanel {
 
 
     private void updateHandDisplay() {
-        // Clear existing cards from UI and update with current cards
+        // clear existing cards and move on
         for (int i = 0; i < playerCardPanels.size(); i++) {
             JPanel playerPanel = (JPanel) playerCardPanels.get(i).get(0).getParent();
-            playerPanel.removeAll(); // Clear the panel for new cards
+            playerPanel.removeAll(); //clear the panel for the next set of cards
             playerPanel.add(new JLabel("Player " + (i + 1) + ": ", SwingConstants.LEFT)).setForeground(Color.YELLOW); // Re-add the player label
 
             JLabel balanceLabel = new JLabel("Balance: $" + players[i].getBalance());
-            balanceLabel.setForeground(Color.YELLOW); // Set foreground color to yellow
+            balanceLabel.setForeground(Color.YELLOW); 
             playerPanel.add(balanceLabel);
 
             List<CardPanel> panels = playerCardPanels.get(i);
             List<Card> cards = players[i].getHand().getCards();
-            panels.clear(); // Clear the old card panels list
+            panels.clear(); 
 
-            int totalValue = 0; // track total value
+            int totalValue = 0; // keep track of total value
             for (Card card : cards) {
                 totalValue += card.getValue(); // calculate total value
                 CardPanel newPanel = new CardPanel(card);
@@ -173,18 +171,17 @@ public class BlackJackGame extends JPanel {
 
             // Display total value
             JLabel totalLabel = new JLabel("Total: " + totalValue);
-            totalLabel.setForeground(Color.YELLOW); // Set foreground color to yellow
+            totalLabel.setForeground(Color.YELLOW);
             playerPanel.add(totalLabel);
         }
 
-        // Similar updates needed for the dealer
         JPanel dealerPanel = (JPanel) dealerCardPanels.get(0).getParent();
-        dealerPanel.removeAll(); // Clear the panel for new cards
-        dealerPanel.add(dealerLabel); // Re-add the dealer label
+        dealerPanel.removeAll(); 
+        dealerPanel.add(dealerLabel); 
 
-        dealerCardPanels.clear(); // Clear old dealer card panels
+        dealerCardPanels.clear();
         List<Card> dealerCards = dealer.getHand().getCards();
-        int dealerTotalValue = 0; // track dealer's total value
+        int dealerTotalValue = 0; 
         for (Card card : dealerCards) {
             dealerTotalValue += card.getValue(); // calculate total dealer value
             CardPanel newPanel = new CardPanel(card);
@@ -194,7 +191,7 @@ public class BlackJackGame extends JPanel {
 
         // Display total value of dealer's cards
         JLabel dealerTotalLabel = new JLabel("Total: " + dealerTotalValue);
-        dealerTotalLabel.setForeground(Color.YELLOW); // Set foreground color to yellow
+        dealerTotalLabel.setForeground(Color.YELLOW); 
         dealerPanel.add(dealerTotalLabel);
 
         revalidate();
@@ -204,11 +201,10 @@ public class BlackJackGame extends JPanel {
 
     private void revealDealer() {
         JPanel dealerPanel = (JPanel) dealerCardPanels.get(0).getParent();
-        dealerPanel.removeAll();  // Clear the panel for new cards
+        dealerPanel.removeAll();  
         dealerLabel = new JLabel("Dealer: ");
-        dealerPanel.add(dealerLabel);  // Re-add the dealer label
-
-        dealerCardPanels.clear();  // Clear old dealer card panels
+        dealerPanel.add(dealerLabel); 
+        dealerCardPanels.clear();  
         List<Card> dealerCards = dealer.getHand().getCards();
         for (Card card : dealerCards) {
             CardPanel newPanel = new CardPanel(card);
@@ -223,18 +219,17 @@ public class BlackJackGame extends JPanel {
 
     private void dealerTurn() {
     	dealerTotalValue = 0;
-        revealDealer();  // Initially reveal the dealer's starting hand
+        revealDealer(); 
         Timer timer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Continue hitting if the dealer's score is less than 17 or it's a soft 17
                 if (dealer.getScore() < 17 || (dealer.getScore() == 17 && dealer.hasSoftSeventeen())) {
                     dealer.addCardToHand(deck.dealCard());
-                    revealDealer();  // Update display after each hit
+                    revealDealer();  
                 } else {
                     ((Timer) e.getSource()).stop();
-                    dealerFirstCardHidden = false; // No longer relevant
-                    revealDealer();  // Ensure final state of dealer's hand is shown
+                    dealerFirstCardHidden = false;
+                    revealDealer(); 
                     determineWinner();
                 }
             }
@@ -273,7 +268,7 @@ public class BlackJackGame extends JPanel {
     }
 
     private void newRound() {
-        dealerFirstCardHidden = true; // Hide dealer's first card again
+        dealerFirstCardHidden = true;
         betAmount = 100;
         deck = new Deck();
         deck.shuffle();

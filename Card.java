@@ -38,7 +38,7 @@ public class Card {
                 shortFace = "A";
                 break;
             default:
-                shortFace = face; // Assuming number cards are named "2", "3", etc.
+                shortFace = face;
                 break;
         }
         this.imageUrl = "/cards/" + shortFace + "-" + shortSuit + ".png";
